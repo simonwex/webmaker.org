@@ -1,17 +1,17 @@
 module.exports = function(domains) {
-  var realmResp;
+  var realmResponse;
 
   if (domains) {
-    realmResp = {
+    realmResponse = {
       realm: domains.split(" ")
     };
   }
 
   return function(req, res, next) {
-    if (!realmResp) {
+    if (!realmResponse) {
       return res.send(404);
     }
 
-    res.json(realmResp);
+    res.json(realmResponse);
   };
 };
