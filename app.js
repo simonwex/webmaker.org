@@ -21,6 +21,7 @@ var app = express(),
   nunjucksEnv = new nunjucks.Environment(new nunjucks.FileSystemLoader(path.join(__dirname, 'views')), {
     autoescape: true
   }),
+  middleware = require("./lib/middleware"),
   NODE_ENV = env.get("NODE_ENV"),
   WWW_ROOT = path.resolve(__dirname, "public"),
   server,
@@ -95,6 +96,9 @@ if (env.get("ENABLE_GELF_LOGS")) {
 app.use(helmet.iexss());
 app.use(helmet.contentTypeOptions());
 app.use(helmet.xframe());
+app.use(middleware.addCSP({
+  ssoUx: env.get("LOGIN")
+}));
 
 if ( !! env.get("FORCE_SSL")) {
   app.use(helmet.hsts());
@@ -260,8 +264,6 @@ require("./lib/loginapi")(app, {
   audience: env.get("AUDIENCE"),
   verifierURI: env.get("PERSONA_VERIFIER_URI")
 });
-
-var middleware = require("./lib/middleware");
 
 // ROUTES
 
